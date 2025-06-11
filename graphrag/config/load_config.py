@@ -180,6 +180,7 @@ def load_config(
         If there are pydantic validation errors when instantiating the config.
     """
     root = root_dir.resolve()
+<<<<<<< HEAD
     config_path = _get_config_path(root, config_filepath)
     _load_dotenv(config_path)
     config_extension = config_path.suffix
@@ -189,3 +190,14 @@ def load_config(
     if cli_overrides:
         _apply_overrides(config_data, cli_overrides)
     return create_graphrag_config(config_data, root_dir=str(root))
+=======
+    config_path = _get_config_path(root, config_filepath) # config.yaml路径
+    _load_dotenv(config_path) # 加载 .env文件环境变量
+    config_extension = config_path.suffix
+    config_text = config_path.read_text(encoding="utf-8")
+    config_text = _parse_env_variables(config_text) # config.yaml 更新环境变量
+    config_data = _parse(config_extension, config_text)
+    if cli_overrides:
+        _apply_overrides(config_data, cli_overrides) # 覆盖配置
+    return create_graphrag_config(config_data, root_dir=str(root)) # 创建 GraphRagConfig，并且添加 root 路径
+>>>>>>> origin

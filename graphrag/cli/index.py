@@ -79,6 +79,7 @@ def index_cli(
         cli_overrides["output.base_dir"] = str(output_dir)
         cli_overrides["reporting.base_dir"] = str(output_dir)
         cli_overrides["update_index_output.base_dir"] = str(output_dir)
+<<<<<<< HEAD
     config = load_config(root_dir, config_filepath, cli_overrides)
 
     _run_index(
@@ -91,6 +92,20 @@ def index_cli(
         logger=logger,
         dry_run=dry_run,
         skip_validation=skip_validation,
+=======
+    config = load_config(root_dir, config_filepath, cli_overrides) # 加载 setting.yaml 和 .env文件，并且覆盖 cli_overrides 变量
+
+    _run_index(
+        config=config, # 加载的  setting.yaml
+        method=method,  # 默认索引方法 IndexingMethod.Standard
+        is_update_run=False,
+        verbose=verbose, # 日志冗余 默认 false
+        memprofile=memprofile, # 是否记忆 默认 false
+        cache=cache, # 使用缓存 默认 true
+        logger=logger, # 日志类型 默认 rich
+        dry_run=dry_run,  # 测试模型 默认 false
+        skip_validation=skip_validation, # 跳过验证配置文件 默认 false
+>>>>>>> origin
     )
 
 

@@ -198,6 +198,7 @@ class LanguageModelConfig(BaseModel):
         description="The number of tokens per minute to use for the LLM service.",
         default=language_model_defaults.tokens_per_minute,
     )
+<<<<<<< HEAD
 
     def _validate_tokens_per_minute(self) -> None:
         """Validate the tokens per minute.
@@ -212,10 +213,13 @@ class LanguageModelConfig(BaseModel):
             msg = f"Tokens per minute must be a non zero positive number, 'auto' or null. Suggested value: {language_model_defaults.tokens_per_minute}."
             raise ValueError(msg)
 
+=======
+>>>>>>> origin
     requests_per_minute: int | Literal["auto"] | None = Field(
         description="The number of requests per minute to use for the LLM service.",
         default=language_model_defaults.requests_per_minute,
     )
+<<<<<<< HEAD
 
     def _validate_requests_per_minute(self) -> None:
         """Validate the requests per minute.
@@ -230,6 +234,8 @@ class LanguageModelConfig(BaseModel):
             msg = f"Requests per minute must be a non zero positive number, 'auto' or null. Suggested value: {language_model_defaults.requests_per_minute}."
             raise ValueError(msg)
 
+=======
+>>>>>>> origin
     retry_strategy: str = Field(
         description="The retry strategy to use for the LLM service.",
         default=language_model_defaults.retry_strategy,
@@ -238,6 +244,7 @@ class LanguageModelConfig(BaseModel):
         description="The maximum number of retries to use for the LLM service.",
         default=language_model_defaults.max_retries,
     )
+<<<<<<< HEAD
 
     def _validate_max_retries(self) -> None:
         """Validate the maximum retries.
@@ -251,6 +258,8 @@ class LanguageModelConfig(BaseModel):
             msg = f"Maximum retries must be greater than or equal to 1. Suggested value: {language_model_defaults.max_retries}."
             raise ValueError(msg)
 
+=======
+>>>>>>> origin
     max_retry_wait: float = Field(
         description="The maximum retry wait to use for the LLM service.",
         default=language_model_defaults.max_retry_wait,
@@ -320,9 +329,12 @@ class LanguageModelConfig(BaseModel):
         self._validate_type()
         self._validate_auth_type()
         self._validate_api_key()
+<<<<<<< HEAD
         self._validate_tokens_per_minute()
         self._validate_requests_per_minute()
         self._validate_max_retries()
+=======
+>>>>>>> origin
         self._validate_azure_settings()
         self._validate_encoding_model()
         return self

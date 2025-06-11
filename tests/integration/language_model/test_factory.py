@@ -33,11 +33,15 @@ async def test_create_custom_chat_model():
         def chat(
             self, prompt: str, history: list | None = None, **kwargs: Any
         ) -> ModelResponse:
+<<<<<<< HEAD
             return BaseModelResponse(
                 output=BaseModelOutput(
                     content="content", full_response={"key": "value"}
                 )
             )
+=======
+            return BaseModelResponse(output=BaseModelOutput(content="content"))
+>>>>>>> origin
 
         async def achat_stream(
             self, prompt: str, history: list | None = None, **kwargs: Any
@@ -53,11 +57,17 @@ async def test_create_custom_chat_model():
     assert isinstance(model, CustomChatModel)
     response = await model.achat("prompt")
     assert response.output.content == "content"
+<<<<<<< HEAD
     assert response.output.full_response is None
 
     response = model.chat("prompt")
     assert response.output.content == "content"
     assert response.output.full_response == {"key": "value"}
+=======
+
+    response = model.chat("prompt")
+    assert response.output.content == "content"
+>>>>>>> origin
 
 
 async def test_create_custom_embedding_llm():

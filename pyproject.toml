@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [tool.poetry]
 name = "graphrag"
 # Maintainers: do not change the version here manually, use ./scripts/release.sh
@@ -118,6 +119,73 @@ build-backend = "poetry_dynamic_versioning.backend"
 [tool.poe.tasks]
 _sort_imports = "ruff check --select I --fix ."
 _format_code = "ruff format  ."
+=======
+[project]
+name = "graphrag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+dependencies = [
+    "environs>=11.0.0",
+    "azure-search-documents>=11.5.2",
+    "lancedb>=0.17.0",
+    "aiofiles>=24.1.0",
+    "fnllm[azure,openai]>=0.3.0",
+    "json-repair>=0.30.3",
+    "openai>=1.68.0",
+    "nltk==3.9.1",
+    "tiktoken>=0.9.0",
+    "numpy>=1.25.2",
+    "graspologic>=3.4.1",
+    "networkx>=3.4.2",
+    "pandas>=2.2.3",
+    "pyarrow>=15.0.0",
+    "umap-learn>=0.5.6",
+    "pyyaml>=6.0.2",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.10.3",
+    "rich>=13.9.4",
+    "devtools>=0.12.2",
+    "typing-extensions>=4.12.2",
+    "azure-cosmos>=4.9.0",
+    "azure-identity>=1.19.0",
+    "azure-storage-blob>=12.24.0",
+    "future>=1.0.0",
+    "typer>=0.15.1",
+    "tqdm>=4.67.1",
+    "textblob>=0.18.0.post0",
+    "spacy>=3.8.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage>=7.6.9",
+    "ipykernel>=6.29.5",
+    "jupyter>=1.1.1",
+    "nbconvert>=7.16.4",
+    "poethepoet>=0.31.1",
+    "pyright>=1.1.390",
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.24.0",
+    "pytest-timeout>=2.3.1",
+    "ruff>=0.8.2",
+    "semversioner>=2.0.5",
+    "update-toml>=0.2.1",
+    "deptry>=0.21.1",
+    "mkdocs-material>=9.5.48",
+    "mkdocs-jupyter>=0.25.1",
+    "mkdocs-exclude-search>=0.6.6",
+    "pytest-dotenv>=0.5.2",
+    "mkdocs-typer>=0.0.3",
+]
+
+[tool.poe.tasks]
+_sort_imports = "ruff check --select I --fix ."
+_format_code = "ruff format ."
+>>>>>>> origin
 _ruff_check = 'ruff check .'
 _pyright = "pyright"
 _convert_local_search_nb = 'jupyter nbconvert --output-dir=docsite/posts/query/notebooks/ --output="{notebook_name}_nb" --template=docsite/nbdocsite_template --to markdown examples_notebooks/local_search.ipynb'
@@ -141,7 +209,10 @@ update = "python -m graphrag update"
 init = "python -m graphrag init"
 query = "python -m graphrag query"
 prompt_tune = "python -m graphrag prompt-tune"
+<<<<<<< HEAD
 # Pass in a test pattern
+=======
+>>>>>>> origin
 test_only = "pytest -s -k"
 serve_docs = "mkdocs serve"
 build_docs = "mkdocs build"
@@ -182,6 +253,7 @@ docstring-code-line-length = 20
 [tool.ruff.lint]
 preview = true
 select = [
+<<<<<<< HEAD
     "E4",
     "E7",
     "E9",
@@ -246,6 +318,19 @@ ignore = [
     "PERF203", # Needs restructuring of errors, we should bail-out on first error
     "C901",    # needs refactoring to remove cyclomatic complexity
     "B008", # Needs to restructure our cli params with Typer into constants
+=======
+    "E4", "E7", "E9", "W291", "YTT", "T10", "ICN", "INP", "Q", "RSE", "SLOT", "INT", "FLY", "LOG", "C90",
+    "T20", "D", "RET", "PD", "N", "PIE", "SIM", "S", "G", "ERA", "ASYNC", "TID", "UP", "SLF", "BLE",
+    "C4", "I", "F", "A", "ARG", "PTH", "RUF", "B", "TCH", "DTZ", "PYI", "PT", "EM", "TRY", "PERF", "CPY",
+]
+ignore = [
+    "A005",
+    "ARG002",
+    "ANN204",
+    "PD002",
+    "PERF203",
+    "C901",
+>>>>>>> origin
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -259,7 +344,10 @@ builtins-ignorelist = ["input", "id", "bytes"]
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
+<<<<<<< HEAD
 # https://github.com/microsoft/pyright/blob/9f81564a4685ff5c55edd3959f9b39030f590b2f/docs/configuration.md#sample-pyprojecttoml-file
+=======
+>>>>>>> origin
 [tool.pyright]
 include = ["graphrag", "tests", "examples_notebooks"]
 exclude = ["**/node_modules", "**/__pycache__"]
@@ -269,3 +357,10 @@ asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
 timeout = 1000
 env_files = [".env"]
+<<<<<<< HEAD
+=======
+
+
+[[tool.uv.index]]
+url = "https://mirrors.aliyun.com/pypi/simple"
+>>>>>>> origin

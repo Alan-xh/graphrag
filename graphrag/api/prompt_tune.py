@@ -17,7 +17,11 @@ import annotated_types
 from pydantic import PositiveInt, validate_call
 
 from graphrag.callbacks.noop_workflow_callbacks import NoopWorkflowCallbacks
+<<<<<<< HEAD
 from graphrag.config.defaults import graphrag_config_defaults
+=======
+from graphrag.config.defaults import graphrag_config_defaults, language_model_defaults
+>>>>>>> origin
 from graphrag.config.models.graph_rag_config import GraphRagConfig
 from graphrag.language_model.manager import ModelManager
 from graphrag.logger.base import ProgressLogger
@@ -109,6 +113,18 @@ async def generate_indexing_prompts(
     logger.info("Retrieving language model configuration...")
     default_llm_settings = config.get_language_model_config(PROMPT_TUNING_MODEL_ID)
 
+<<<<<<< HEAD
+=======
+    # if max_retries is not set, inject a dynamically assigned value based on the number of expected LLM calls
+    # to be made or fallback to a default value in the worst case
+    if default_llm_settings.max_retries < -1:
+        default_llm_settings.max_retries = min(
+            len(doc_list), language_model_defaults.max_retries
+        )
+        msg = f"max_retries not set, using default value: {default_llm_settings.max_retries}"
+        logger.warning(msg)
+
+>>>>>>> origin
     logger.info("Creating language model...")
     llm = ModelManager().register_chat(
         name="prompt_tuning",
