@@ -79,33 +79,18 @@ def index_cli(
         cli_overrides["output.base_dir"] = str(output_dir)
         cli_overrides["reporting.base_dir"] = str(output_dir)
         cli_overrides["update_index_output.base_dir"] = str(output_dir)
-<<<<<<< HEAD
-    config = load_config(root_dir, config_filepath, cli_overrides)
-
-    _run_index(
-        config=config,
-        method=method,
-        is_update_run=False,
-        verbose=verbose,
-        memprofile=memprofile,
-        cache=cache,
-        logger=logger,
-        dry_run=dry_run,
-        skip_validation=skip_validation,
-=======
     config = load_config(root_dir, config_filepath, cli_overrides) # 加载 setting.yaml 和 .env文件，并且覆盖 cli_overrides 变量
 
     _run_index(
         config=config, # 加载的  setting.yaml
         method=method,  # 默认索引方法 IndexingMethod.Standard
-        is_update_run=False,
+        is_update_run=False, # workflow 执行升级工作流
         verbose=verbose, # 日志冗余 默认 false
         memprofile=memprofile, # 是否记忆 默认 false
         cache=cache, # 使用缓存 默认 true
         logger=logger, # 日志类型 默认 rich
         dry_run=dry_run,  # 测试模型 默认 false
         skip_validation=skip_validation, # 跳过验证配置文件 默认 false
->>>>>>> origin
     )
 
 
@@ -153,6 +138,20 @@ def _run_index(
     dry_run,
     skip_validation,
 ):
+    '''
+    运行索引
+
+    :param config: 配置文件路径
+    :param method: 索引方法
+    :param is_update_run: 是否更新索引，工作流添加更新步骤
+    :param verbose: 是否详细输出
+    :param memprofile: 是否进行内存分析
+    :param cache: 是否使用缓存
+    :param logger: 日志记录器
+    :param dry_run: 是否进行dry run
+    :param skip_validation: 是否跳过验证
+    '''
+
     progress_logger = LoggerFactory().create_logger(logger)
     info, error, success = _logger(progress_logger)
 

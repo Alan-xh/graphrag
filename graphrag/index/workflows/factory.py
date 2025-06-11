@@ -35,13 +35,8 @@ class PipelineFactory:
         is_update_run: bool = False,
     ) -> Pipeline:
         """Create a pipeline generator."""
-<<<<<<< HEAD
-        workflows = _get_workflows_list(config, method, is_update_run)
-        return Pipeline([(name, cls.workflows[name]) for name in workflows])
-=======
         workflows = _get_workflows_list(config, method, is_update_run) # 获得 workflow 列表
         return Pipeline([(name, cls.workflows[name]) for name in workflows]) # [{name, class}]
->>>>>>> origin
 
 
 def _get_workflows_list(
@@ -66,17 +61,6 @@ def _get_workflows_list(
     match method:
         case IndexingMethod.Standard:
             return [
-<<<<<<< HEAD
-                "create_base_text_units",
-                "create_final_documents",
-                "extract_graph",
-                "finalize_graph",
-                *(["extract_covariates"] if config.extract_claims.enabled else []),
-                "create_communities",
-                "create_final_text_units",
-                "create_community_reports",
-                "generate_text_embeddings",
-=======
                 "create_base_text_units", # 构建文档单元
                 "create_final_documents", # 构建文档
                 "extract_graph", # prompt 构建图谱
@@ -86,20 +70,14 @@ def _get_workflows_list(
                 "create_final_text_units", # 创建最终的文本单元
                 "create_community_reports", # 创建社区报告
                 "generate_text_embeddings", # 生成文本嵌入
->>>>>>> origin
                 *(update_workflows if is_update_run else []),
             ]
         case IndexingMethod.Fast:
             return [
                 "create_base_text_units",
                 "create_final_documents",
-<<<<<<< HEAD
-                "extract_graph_nlp",
-                "prune_graph",
-=======
                 "extract_graph_nlp", # nlp 构建图谱
                 "prune_graph", # 剪枝
->>>>>>> origin
                 "finalize_graph",
                 "create_communities",
                 "create_final_text_units",
