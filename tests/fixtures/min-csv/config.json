@@ -1,21 +1,25 @@
 {
     "input_path": "./tests/fixtures/min-csv",
-    "input_file_type": "text",
+    "input_type": "text",
+    "index_method": "standard",
     "workflow_config": {
+        "load_input_documents": {
+            "max_runtime": 30
+        },
         "create_base_text_units": {
             "max_runtime": 30
+        },
+        "extract_covariates": 
+        {
+            "max_runtime": 10
         },
         "extract_graph": {
             "max_runtime": 500
         },
         "finalize_graph": {
             "row_range": [
-                1,
-                500
-            ],
-            "nan_allowed_columns": [
-                "x",
-                "y"
+                100,
+                750
             ],
             "max_runtime": 30,
             "expected_artifacts": [
@@ -26,7 +30,7 @@
         "create_communities": {
             "row_range": [
                 10,
-                30
+                80
             ],
             "max_runtime": 30,
             "expected_artifacts": ["communities.parquet"]
@@ -34,7 +38,7 @@
         "create_community_reports": {
             "row_range": [
                 10,
-                30
+                80
             ],
             "nan_allowed_columns": [
                 "title",
@@ -47,7 +51,7 @@
                 "period",
                 "size"
             ],
-            "max_runtime": 300,
+            "max_runtime": 2000,
             "expected_artifacts": ["community_reports.parquet"]
         },
         "create_final_text_units": {
@@ -69,7 +73,7 @@
                 15
             ],
             "nan_allowed_columns": [
-                "metadata"
+                "raw_data"
             ],
             "max_runtime": 30,
             "expected_artifacts": ["documents.parquet"]
@@ -81,9 +85,9 @@
             ],
             "max_runtime": 150,
             "expected_artifacts": [
-                "embeddings.text_unit.text.parquet",
-                "embeddings.entity.description.parquet",
-                "embeddings.community.full_content.parquet"
+                "embeddings.text_unit_text.parquet",
+                "embeddings.entity_description.parquet",
+                "embeddings.community_full_content.parquet"
             ]
         }
     },
@@ -94,7 +98,7 @@
         },
         {
             "query": "What is the major conflict in this story and who are the protagonist and antagonist?",
-            "method": "global"
+            "method": "drift"
         }
     ],
     "slow": false

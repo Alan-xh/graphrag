@@ -14,13 +14,12 @@ from unittest import mock
 
 import pandas as pd
 import pytest
-
 from graphrag.query.context_builder.community_context import (
     NO_COMMUNITY_RECORDS_WARNING,
 )
-from graphrag.storage.blob_pipeline_storage import BlobPipelineStorage
+from graphrag_storage.azure_blob_storage import AzureBlobStorage
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 debug = os.environ.get("DEBUG") is not None
 gh_pages = os.environ.get("GH_PAGES") is not None
@@ -95,7 +94,7 @@ async def prepare_azurite_data(input_path: str, azure: dict) -> Callable[[], Non
     input_base_dir = azure.get("input_base_dir")
 
     root = Path(input_path)
-    input_storage = BlobPipelineStorage(
+    input_storage = AzureBlobStorage(
         connection_string=WELL_KNOWN_AZURITE_CONNECTION_STRING,
         container_name=input_container,
     )
@@ -127,26 +126,23 @@ class TestIndexer:
     def __run_indexer(
         self,
         root: Path,
-        input_file_type: str,
+        input_type: str,
+        index_method: str,
     ):
         command = [
-            "poetry",
+            "uv",
             "run",
             "poe",
             "index",
             "--verbose" if debug else None,
             "--root",
             root.resolve().as_posix(),
-            "--logger",
-            "print",
             "--method",
-            "standard",
+            index_method,
         ]
         command = [arg for arg in command if arg]
-        log.info("running command ", " ".join(command))
-        completion = subprocess.run(
-            command, env={**os.environ, "GRAPHRAG_INPUT_FILE_TYPE": input_file_type}
-        )
+        logger.info("running command ", " ".join(command))
+        completion = subprocess.run(command, env=os.environ)
         assert completion.returncode == 0, (
             f"Indexer failed with return code: {completion.returncode}"
         )
@@ -182,43 +178,46 @@ class TestIndexer:
             for artifact in workflow_artifacts:
                 if artifact.endswith(".parquet"):
                     output_df = pd.read_parquet(output_path / artifact)
-
-                    # Check number of rows between range
-                    assert (
-                        config["row_range"][0]
-                        <= len(output_df)
-                        <= config["row_range"][1]
-                    ), (
-                        f"Expected between {config['row_range'][0]} and {config['row_range'][1]}, found: {len(output_df)} for file: {artifact}"
+                elif artifact.endswith(".csv"):
+                    output_df = pd.read_csv(
+                        output_path / artifact, keep_default_na=False
                     )
+                else:
+                    continue
 
-                    # Get non-nan rows
-                    nan_df = output_df.loc[
-                        :,
-                        ~output_df.columns.isin(config.get("nan_allowed_columns", [])),
-                    ]
-                    nan_df = nan_df[nan_df.isna().any(axis=1)]
-                    assert len(nan_df) == 0, (
-                        f"Found {len(nan_df)} rows with NaN values for file: {artifact} on columns: {nan_df.columns[nan_df.isna().any()].tolist()}"
-                    )
+                # Check number of rows between range
+                assert (
+                    config["row_range"][0] <= len(output_df) <= config["row_range"][1]
+                ), (
+                    f"Expected between {config['row_range'][0]} and {config['row_range'][1]}, found: {len(output_df)} for file: {artifact}"
+                )
+
+                # Get non-nan rows
+                nan_df = output_df.loc[
+                    :,
+                    ~output_df.columns.isin(config.get("nan_allowed_columns", [])),
+                ]
+                nan_df = nan_df[nan_df.isna().any(axis=1)]
+                assert len(nan_df) == 0, (
+                    f"Found {len(nan_df)} rows with NaN values for file: {artifact} on columns: {nan_df.columns[nan_df.isna().any()].tolist()}"
+                )
 
     def __run_query(self, root: Path, query_config: dict[str, str]):
         command = [
-            "poetry",
+            "uv",
             "run",
             "poe",
             "query",
+            query_config["query"],
             "--root",
             root.resolve().as_posix(),
             "--method",
             query_config["method"],
             "--community-level",
             str(query_config.get("community_level", 2)),
-            "--query",
-            query_config["query"],
         ]
 
-        log.info("running command ", " ".join(command))
+        logger.info("running command ", " ".join(command))
         return subprocess.run(command, capture_output=True, text=True)
 
     @cleanup(skip=debug)
@@ -226,22 +225,19 @@ class TestIndexer:
         os.environ,
         {
             **os.environ,
-            "BLOB_STORAGE_CONNECTION_STRING": os.getenv(
-                "GRAPHRAG_CACHE_CONNECTION_STRING", WELL_KNOWN_AZURITE_CONNECTION_STRING
-            ),
+            "BLOB_STORAGE_CONNECTION_STRING": WELL_KNOWN_AZURITE_CONNECTION_STRING,
             "LOCAL_BLOB_STORAGE_CONNECTION_STRING": WELL_KNOWN_AZURITE_CONNECTION_STRING,
-            "GRAPHRAG_CHUNK_SIZE": "1200",
-            "GRAPHRAG_CHUNK_OVERLAP": "0",
             "AZURE_AI_SEARCH_URL_ENDPOINT": os.getenv("AZURE_AI_SEARCH_URL_ENDPOINT"),
             "AZURE_AI_SEARCH_API_KEY": os.getenv("AZURE_AI_SEARCH_API_KEY"),
         },
         clear=True,
     )
-    @pytest.mark.timeout(800)
+    @pytest.mark.timeout(2000)
     def test_fixture(
         self,
         input_path: str,
-        input_file_type: str,
+        input_type: str,
+        index_method: str,
         workflow_config: dict[str, dict[str, Any]],
         query_config: list[dict[str, str]],
     ):
@@ -256,7 +252,7 @@ class TestIndexer:
             dispose = asyncio.run(prepare_azurite_data(input_path, azure))
 
         print("running indexer")
-        self.__run_indexer(root, input_file_type)
+        self.__run_indexer(root, input_type, index_method)
         print("indexer complete")
 
         if dispose is not None:

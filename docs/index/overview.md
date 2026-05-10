@@ -7,8 +7,7 @@ Indexing Pipelines are configurable. They are composed of workflows, standard an
 - extract entities, relationships and claims from raw text
 - perform community detection in entities
 - generate community summaries and reports at multiple levels of granularity
-- embed entities into a graph vector space
-- embed text chunks into a textual vector space
+- embed text into a vector space
 
 The outputs of the pipeline are stored as Parquet tables by default, and embeddings are written to your configured vector store.
 
@@ -26,13 +25,12 @@ After you have a config file you can run the pipeline using the CLI or the Pytho
 ### CLI
 
 ```bash
-# Via Poetry
-poetry run poe index --root <data_root> # default config mode
+uv run poe index --root <data_root> # default config mode
 ```
 
 ### Python API
 
-Please see the indexing API [python file](https://github.com/microsoft/graphrag/blob/main/graphrag/api/index.py) for the recommended method to call directly from Python code.
+Please see the indexing API [python file](https://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/api/index.py) for the recommended method to call directly from Python code.
 
 ## Further Reading
 

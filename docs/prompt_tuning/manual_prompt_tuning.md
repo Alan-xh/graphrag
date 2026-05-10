@@ -8,7 +8,7 @@ GraphRAG索引器默认使用一组设计用于广泛知识发现场景的提示
 
 ### 实体/关系提取
 
-[提示源](http://github.com/microsoft/graphrag/blob/main/graphrag/prompts/index/entity_extraction.py)
+[Prompt Source](http://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/prompts/index/extract_graph.py)
 
 #### 标记
 
@@ -20,7 +20,7 @@ GraphRAG索引器默认使用一组设计用于广泛知识发现场景的提示
 
 ### 总结实体/关系描述
 
-[提示源](http://github.com/microsoft/graphrag/blob/main/graphrag/prompts/index/summarize_descriptions.py)
+[Prompt Source](http://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/prompts/index/summarize_descriptions.py)
 
 #### 标记
 
@@ -29,7 +29,7 @@ GraphRAG索引器默认使用一组设计用于广泛知识发现场景的提示
 
 ### 声明提取
 
-[提示源](http://github.com/microsoft/graphrag/blob/main/graphrag/prompts/index/claim_extraction.py)
+[Prompt Source](http://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/prompts/index/extract_claims.py)
 
 #### 标记
 
@@ -44,7 +44,7 @@ GraphRAG索引器默认使用一组设计用于广泛知识发现场景的提示
 
 ### 生成社区报告
 
-[提示源](http://github.com/microsoft/graphrag/blob/main/graphrag/prompts/index/community_report.py)
+[Prompt Source](http://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/prompts/index/community_report.py)
 
 #### 标记
 
@@ -54,7 +54,7 @@ GraphRAG索引器默认使用一组设计用于广泛知识发现场景的提示
 
 ### 本地搜索
 
-[提示源](http://github.com/microsoft/graphrag/blob/main/graphrag/prompts/query/local_search_system_prompt.py)
+[Prompt Source](http://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/prompts/query/local_search_system_prompt.py)
 
 #### 标记
 
@@ -63,11 +63,11 @@ GraphRAG索引器默认使用一组设计用于广泛知识发现场景的提示
 
 ### 全局搜索
 
-[映射器提示源](http://github.com/microsoft/graphrag/blob/main/graphrag/prompts/query/global_search_map_system_prompt.py)
+[Mapper Prompt Source](http://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/prompts/query/global_search_map_system_prompt.py)
 
-[归约器提示源](http://github.com/microsoft/graphrag/blob/main/graphrag/prompts/query/global_search_reduce_system_prompt.py)
+[Reducer Prompt Source](http://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/prompts/query/global_search_reduce_system_prompt.py)
 
-[知识提示源](http://github.com/microsoft/graphrag/blob/main/graphrag/prompts/query/global_search_knowledge_system_prompt.py)
+[Knowledge Prompt Source](http://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/prompts/query/global_search_knowledge_system_prompt.py)
 
 全局搜索使用映射/归约方法进行摘要。您可以独立调整这些提示。此搜索还包括调整使用模型训练中获得的通用知识的功能。
 
@@ -78,7 +78,7 @@ GraphRAG索引器默认使用一组设计用于广泛知识发现场景的提示
 
 ### 漂移搜索
 
-[提示源](http://github.com/microsoft/graphrag/blob/main/graphrag/prompts/query/drift_search_system_prompt.py)
+[Prompt Source](http://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/prompts/query/drift_search_system_prompt.py)
 
 #### 标记
 

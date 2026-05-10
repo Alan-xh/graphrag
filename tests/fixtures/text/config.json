@@ -1,44 +1,33 @@
 {
     "input_path": "./tests/fixtures/text",
-    "input_file_type": "text",
+    "input_type": "text",
+    "index_method": "fast",
     "workflow_config": {
+        "load_input_documents": {
+            "max_runtime": 30
+        },
         "create_base_text_units": {
             "max_runtime": 30
         },
-        "extract_graph": {
-            "max_runtime": 500
+        "extract_graph_nlp": {
+            "max_runtime": 30
+        },
+        "prune_graph": {
+            "max_runtime": 30
         },
         "finalize_graph": {
             "row_range": [
-                1,
-                500
-            ],
-            "nan_allowed_columns": [
-                "x",
-                "y"
+                10,
+                300
             ],
             "max_runtime": 30,
-            "expected_artifacts": [
-                "entities.parquet",
-                "relationships.parquet"
-            ]
-        },
-        "extract_covariates": {
-            "row_range": [
-                1,
-                100
-            ],
             "nan_allowed_columns": [
-                "type",
-                "description",
-                "object_id",
-                "status",
-                "start_date",
-                "end_date",
-                "source_text"
+                "description"
             ],
-            "max_runtime": 300,
-            "expected_artifacts": ["covariates.parquet"]
+            "expected_artifacts": [
+                "entities.csv",
+                "relationships.csv"
+            ]
         },
         "create_communities": {
             "row_range": [
@@ -46,9 +35,9 @@
                 30
             ],
             "max_runtime": 30,
-            "expected_artifacts": ["communities.parquet"]
+            "expected_artifacts": ["communities.csv"]
         },
-        "create_community_reports": {
+        "create_community_reports_text": {
             "row_range": [
                 1,
                 30
@@ -64,8 +53,8 @@
                 "period",
                 "size"
             ],
-            "max_runtime": 300,
-            "expected_artifacts": ["community_reports.parquet"]
+            "max_runtime": 2000,
+            "expected_artifacts": ["community_reports.csv"]
         },
         "create_final_text_units": {
             "row_range": [
@@ -78,7 +67,7 @@
                 "covariate_ids"
             ],
             "max_runtime": 30,
-            "expected_artifacts": ["text_units.parquet"]
+            "expected_artifacts": ["text_units.csv"]
         },
         "create_final_documents": {
             "row_range": [
@@ -86,10 +75,10 @@
                 1
             ],
             "nan_allowed_columns": [
-                "metadata"
+                "raw_data"
             ],
             "max_runtime": 30,
-            "expected_artifacts": ["documents.parquet"]
+            "expected_artifacts": ["documents.csv"]
         },
         "generate_text_embeddings": {
             "row_range": [
@@ -98,9 +87,9 @@
             ],
             "max_runtime": 150,
             "expected_artifacts": [
-                "embeddings.text_unit.text.parquet",
-                "embeddings.entity.description.parquet",
-                "embeddings.community.full_content.parquet"
+                "embeddings.text_unit_text.csv",
+                "embeddings.entity_description.csv",
+                "embeddings.community_full_content.csv"
             ]
         }
     },
@@ -112,10 +101,6 @@
         {
             "query": "What is the major conflict in this story and who are the protagonist and antagonist?",
             "method": "global"
-        },
-        {
-            "query": "What is the main theme of the story?",
-            "method": "drift"
         },
         {
             "query": "Who is Jordan Hayes?",

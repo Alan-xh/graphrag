@@ -20,16 +20,14 @@ GraphRAG 提供了一种能力，可以为知识图谱的生成创建领域适�
 您可以通过命令行运行主脚本，并使用各种选项：
 
 ```bash
-graphrag prompt-tune [--root ROOT] [--config CONFIG] [--domain DOMAIN] [--selection-method METHOD] [--limit LIMIT] [--language LANGUAGE] \
+graphrag prompt-tune [--root ROOT] [--domain DOMAIN]  [--selection-method METHOD] [--limit LIMIT] [--language LANGUAGE] \
 [--max-tokens MAX_TOKENS] [--chunk-size CHUNK_SIZE] [--n-subset-max N_SUBSET_MAX] [--k K] \
 [--min-examples-required MIN_EXAMPLES_REQUIRED] [--discover-entity-types] [--output OUTPUT]
 ```
 
 ## 命令行选项
 
-- `--config`（必需）：配置文件路径。需要此参数来加载数据和模型设置。
-
-- `--root`（可选）：数据项目根目录，包括配置文件（YML、JSON 或 .env）。默认为当前目录。
+- `--root` (optional): Path to the project directory that contains the config file (settings.yaml). Defaults to the current directory.
 
 - `--domain`（可选）：与输入数据相关的领域，例如“空间科学”、“微生物学”或“环境新闻”。如果留空，将从输入数据中推断领域。
 
@@ -56,41 +54,33 @@ graphrag prompt-tune [--root ROOT] [--config CONFIG] [--domain DOMAIN] [--select
 ## 示例用法
 
 ```bash
-python -m graphrag prompt-tune --root /path/to/project --config /path/to/settings.yaml --domain "环境新闻" \
---selection-method random --limit 10 --language 英语 --max-tokens 2048 --chunk-size 256 --min-examples-required 3 \
---no-entity-types --output /path/to/output
+python -m graphrag prompt-tune --root /path/to/project --domain "environmental news" \
+--selection-method random --limit 10 --language English --max-tokens 2048 --chunk-size 256 --min-examples-required 3 \
+--no-discover-entity-types --output /path/to/output
 ```
 
 或使用最少配置（建议）：
 
 ```bash
-python -m graphrag prompt-tune --root /path/to/project --config /path/to/settings.yaml --no-entity-types
+python -m graphrag prompt-tune --root /path/to/project --no-discover-entity-types
 ```
 
 ## 文档选择方法
 
 自动调整功能会摄取输入数据，然后将其分成与 chunk size 参数大小相同的文本单元。之后，它使用以下选择方法之一来挑选用于提示生成的样本：
 
-- `random`：随机选择文本单元。这是默认且推荐的选项。
-- `top`：选择前 n 个文本单元。
-- `all`：使用所有文本单元进行生成。仅适用于小型数据集，通常不推荐此选项。
-- `auto`：将文本单元嵌入到较低维空间，并选择距质心最近的 k 个邻居。适用于大型数据集且希望选择代表性样本时。
+- `random`: Select text units randomly. This is the default and recommended option.
+- `top`: Select the head _n_ text units.
+- `all`: Use all text units for the generation. Use only with small datasets; this option is not usually recommended.
+- `auto`: Embed text units in a lower-dimensional space and select the _k_ nearest neighbors to the centroid. This is useful when you have a large dataset and want to select a representative sample.
 
-## 修改环境变量
+## Modify Config
 
-运行自动调整后，您应修改以下环境变量（或配置文件变量）以在索引运行时使用新生成的提示。请确保更新生成的提示的正确路径，在此示例中我们使用默认的 "prompts" 路径。
-
-- `GRAPHRAG_ENTITY_EXTRACTION_PROMPT_FILE` = "prompts/entity_extraction.txt"
-
-- `GRAPHRAG_COMMUNITY_REPORT_PROMPT_FILE` = "prompts/community_report.txt"
-
-- `GRAPHRAG_SUMMARIZE_DESCRIPTIONS_PROMPT_FILE` = "prompts/summarize_descriptions.txt"
-
-或在您的 YAML 配置文件中：
+After running auto tuning, you should modify the following config variables to pick up the new prompts on your index run. Note: Please make sure to update the correct path to the generated prompts, in this example we are using the default "prompts" path.
 
 ```yaml
-entity_extraction:
-  prompt: "prompts/entity_extraction.txt"
+extract_graph:
+  prompt: "prompts/extract_graph.txt"
 
 summarize_descriptions:
   prompt: "prompts/summarize_descriptions.txt"

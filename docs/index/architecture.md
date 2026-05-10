@@ -4,31 +4,50 @@
 
 ### 知识模型
 
-为了支持 GraphRAG 系统，索引引擎的输出（在默认配置模式下）与我们称为 GraphRAG 知识模型的知识模型保持一致。
-该模型旨在抽象底层数据存储技术，并为 GraphRAG 系统提供通用的交互接口。
-在正常使用情况下，GraphRAG 索引器的输出将被加载到数据库系统中，GraphRAG 的查询引擎将使用知识模型的数据存储类型与数据库交互。
+In order to support the GraphRAG system, the outputs of the indexing engine (in the Default Configuration Mode) are aligned to a knowledge model we call the _GraphRAG Knowledge Model_.
+This model is designed to be an abstraction over the underlying data storage technology, and to provide a common interface for the GraphRAG system to interact with.
 
 ### 工作流
 
-由于数据索引任务的复杂性，我们需要能够将数据管道表示为一系列相互依赖的多个工作流。
+Below is the core GraphRAG indexing pipeline. Individual workflows are described in detail in the [dataflow](./default_dataflow.md) page.
 
 ```mermaid
 ---
-title：示例工作流 DAG
+title: Basic GraphRAG
 ---
 stateDiagram-v2
-[*] --> 准备
-准备 --> 数据块
-数据块 --> 提取图
-数据块 --> 嵌入文档
-提取图 --> 生成报告
-提取图 --> 嵌入实体
-提取图 --> 嵌入图
+    [*] --> LoadDocuments
+    LoadDocuments --> ChunkDocuments
+    ChunkDocuments --> ExtractGraph
+    ChunkDocuments --> ExtractClaims
+    ChunkDocuments --> EmbedChunks
+    ExtractGraph --> DetectCommunities
+    ExtractGraph --> EmbedEntities
+    DetectCommunities --> GenerateReports
+    GenerateReports --> EmbedReports
 ```
 
 ### LLM 缓存
 
-GraphRAG 库在设计时就考虑到了 LLM 交互，使用 LLM API 时的一个常见障碍是由于网络延迟、限流等原因导致的各种错误。
-由于这些潜在的错误情况，我们在 LLM 交互周围添加了一个缓存层。
-当使用相同的输入集（提示和调优参数）发出完成请求时，如果存在缓存结果，我们会返回该结果。
-这使得我们的索引器能够更好地应对网络问题，实现幂等性，并提供更高效的最终用户体验。
+The GraphRAG library was designed with LLM interactions in mind, and a common setback when working with LLM APIs is various errors due to network latency, throttling, etc..
+Because of these potential error cases, we've added a cache layer around LLM interactions.
+When completion requests are made using the same input set (prompt and tuning parameters), we return a cached result if one exists.
+This allows our indexer to be more resilient to network issues, to act idempotently, and to provide a more efficient end-user experience.
+
+### Providers & Factories
+
+Several subsystems within GraphRAG use a factory pattern to register and retrieve provider implementations. This allows deep customization to support your own implementations of models, storage, and so on that we haven't built into the core library.
+
+The following subsystems use a factory pattern that allows you to register your own implementations:
+
+- [language model](https://github.com/microsoft/graphrag/blob/main/packages/graphrag-llm/graphrag_llm/completion/completion_factory.py) - implement your own `chat` and `embed` methods to use a model provider of choice beyond the built-in LiteLLM wrapper
+- [input reader](https://github.com/microsoft/graphrag/blob/main/packages/graphrag-input/graphrag_input/input_reader.py) - implement your own input document reader to support file types other than text, CSV, and JSON
+- [cache](https://github.com/microsoft/graphrag/blob/main/packages/graphrag-cache/graphrag_cache/cache_factory.py) - create your own cache storage location in addition to the file, blob, and CosmosDB ones we provide
+- [logger](https://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/logger/factory.py) - create your own log writing location in addition to the built-in file and blob storage
+- [storage](https://github.com/microsoft/graphrag/blob/main/packages/graphrag-storage/graphrag_storage/tables/table_provider_factory.py) - create your own storage provider (database, etc.) beyond the file, blob, and CosmosDB ones built in
+- [vector store](https://github.com/microsoft/graphrag/blob/main/packages/graphrag-vectors/graphrag_vectors/vector_store_factory.py) - implement your own vector store other than the built-in lancedb, Azure AI Search, and CosmosDB ones built in
+- [pipeline + workflows](https://github.com/microsoft/graphrag/blob/main/packages/graphrag/graphrag/index/workflows/factory.py) - implement your own workflow steps with a custom `run_workflow` function, or register an entire pipeline (list of named workflows)
+
+The links for each of these subsystems point to the source code of the factory, which includes registration of the default built-in implementations. In addition, we have a detailed discussion of [language models](../config/models.md), which includes and example of a custom provider, and a [sample notebook](../examples_notebooks/custom_vector_store.ipynb) that demonstrates a custom vector store.
+
+All of these factories allow you to register an impl using any string name you would like, even overriding built-in ones directly.
